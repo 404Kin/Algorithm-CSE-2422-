@@ -1,0 +1,41 @@
+
+#include<bits/stdc++.h>
+using namespace std;
+
+using ll=long long;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin>>n;
+
+    vector<pair<int,int>>arr;
+
+    for(int i=0;i<n;i++){
+        int s,f;
+        cin>>s>>f;
+
+        arr.push_back({f,s});
+    }
+
+    sort(arr.begin(),arr.end());
+
+    cout<<"("<<arr[0].second<<","<<arr[0].first<<")"<<endl;
+
+    int lastF=arr[0].first;
+
+    for(int i=1;i<n;i++){
+        int start=arr[i].second;
+        int finish=arr[i].first;
+
+        if(start>=lastF){
+            cout<<"("<<start<<","<<finish<<")"<<endl;
+            lastF=finish;
+        }
+    }
+
+    return 0;
+
+}

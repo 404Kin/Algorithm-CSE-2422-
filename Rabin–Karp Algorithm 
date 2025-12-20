@@ -1,68 +1,51 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> rabinKarp(string text, string pattern) {
-    const int base = 256;
-    const int mod = 1e9 + 7;
-
-    int n = text.size();
-    int m = pattern.size();
-
-    vector<int> result;
-    if (m > n) return result;
-
-    long long pHash = 0;
-    long long tHash = 0;
-    long long power = 1;
-
-    for (int i = 0; i < m - 1; i++) {
-        power = (power * base) % mod;
-    }
-
-    for (int i = 0; i < m; i++) {
-        pHash = (pHash * base + pattern[i]) % mod;
-        tHash = (tHash * base + text[i]) % mod;
-    }
-
-    for (int i = 0; i <= n - m; i++) {
-
-        if (pHash == tHash) {
-            if (text.substr(i, m) == pattern)
-                result.push_back(i);
-        }
-
-        if (i < n - m) {
-            tHash = (tHash - text[i] * power) % mod;
-            if (tHash < 0) tHash += mod;
-
-            tHash = (tHash * base + text[i + m]) % mod;
-        }
-    }
-
-    return result;
+int val(char c){
+    return c-'A'+1;
 }
 
-int main() {
-    string text, pattern;
-    cout << "Enter text: ";
-    cin >> text;
+int main(){
+    string txt,pat;
 
-    cout << "Enter pattern: ";
-    cin >> pattern;
+    cout<<"Enter text: ";
+    getline(cin,txt);
+    cout<<"Enter pattern: ";
+    getline(cin,pat);
 
-    vector<int> matches = rabinKarp(text, pattern);
+    int n=txt.size();
+    int m= pat.size();
 
-    if (matches.empty()) {
-        cout << "No match found." << endl;
+    int tv=0;
+    for(char c:pat){
+        tv+=val(c);
     }
-    else {
-        cout << "Pattern found at indices: ";
-        for (int idx : matches){
-            cout << idx << " ";
+
+    unordered_map<int,vector<int>>mp;
+
+    int pv=0;
+    for(int i=0;i<m;i++){
+        pv+=val(txt[i]);
+    }
+
+    mp[pv].push_back(0);
+
+    for(int i=1;i<=n-m;i++) {
+        pv=pv-val(txt[i-1])+val(txt[i+m-1]);
+        mp[pv].push_back(i);
+    }
+
+    if(mp.find(tv)!=mp.end()){
+        for(int idx : mp[tv]) {
+            if(txt.substr(idx,m)==pat) {
+                cout<<"Pattern found at index "<<idx<<endl;
+            }
         }
-        cout << endl;
+    }
+    else{
+        cout<<"Pattern not found"<<endl;
     }
 
     return 0;
 }
-
